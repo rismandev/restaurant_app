@@ -4,7 +4,6 @@ class Merchant {
   String description;
   String pictureId;
   String city;
-  String price;
   double rating;
   MerchantMenu menus;
 
@@ -14,7 +13,6 @@ class Merchant {
     this.description,
     this.pictureId,
     this.city,
-    this.price,
     this.rating,
     this.menus,
   });
@@ -25,7 +23,6 @@ class Merchant {
     description = json['description'];
     pictureId = json['pictureId'];
     city = json['city'];
-    price = json['price'];
     if (json['rating'] is double) {
       rating = json['rating'];
     } else {
@@ -37,11 +34,13 @@ class Merchant {
 
 class MerchantMenuCategory {
   String name;
+  String price;
 
-  MerchantMenuCategory({this.name});
+  MerchantMenuCategory({this.name, this.price});
 
   MerchantMenuCategory.fromJson(Map<String, dynamic> json) {
     name = json['name'];
+    price = json['price'];
   }
 }
 

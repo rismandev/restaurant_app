@@ -64,7 +64,7 @@ class _MainPageState extends State<MainPage> {
           children: [
             if (this.isSearch) ...[
               CustomSearch(
-                placeholder: 'Apa yang kamu suka untuk dimakan?',
+                placeholder: 'Dimana tempat makan favoritemu?',
                 onChanged: (value) {
                   // When change input
                 },

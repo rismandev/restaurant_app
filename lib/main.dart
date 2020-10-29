@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/ui/main_page.dart';
+import 'package:restaurant_app/ui/merchat/detail_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,6 +23,11 @@ class MyApp extends StatelessWidget {
       initialRoute: MainPage.routeName,
       routes: {
         MainPage.routeName: (context) => MainPage(),
+        MerchantDetailPage.routeName: (context) {
+          return MerchantDetailPage(
+            merchant: ModalRoute.of(context).settings.arguments,
+          );
+        },
       },
     );
   }
