@@ -103,7 +103,7 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
           Container(
             margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
             child: Text(
-              'Description',
+              'Deskripsi',
               style: Theme.of(
                 context,
               ).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold),
@@ -126,14 +126,14 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
                   context,
                   isActive: indexMenu == 0,
                   onPressed: () => _changeMenu(0),
-                  text: 'Foods',
+                  text: 'Makanan',
                 ),
                 SizedBox(width: 15),
                 _buildButtonMenu(
                   context,
                   isActive: indexMenu == 1,
                   onPressed: () => _changeMenu(1),
-                  text: 'Drinks',
+                  text: 'Minuman',
                 ),
               ],
             ),

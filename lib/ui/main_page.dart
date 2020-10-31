@@ -2,22 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:siresto_app/common/styles.dart';
 import 'package:siresto_app/ui/merchat/list_page.dart';
 import 'package:siresto_app/ui/settings_page.dart';
 import 'package:siresto_app/widgets/custom_platform.dart';
-import 'package:siresto_app/widgets/custom_search.dart';
 
-class MainPage extends StatefulWidget {
+class MainPage extends StatelessWidget {
   static String routeName = 'main_page';
-
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  // Searching condition
-  bool isSearch = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,72 +19,58 @@ class _MainPageState extends State<MainPage> {
 
   Scaffold _buildAndroid(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: _buildHeader,
-        body: MerchantListPage(),
-      ),
+      appBar: _buildAppBar(context),
+      body: MerchantListPage(),
     );
   }
 
   CupertinoPageScaffold _buildIOS(BuildContext context) {
     return CupertinoPageScaffold(
-      child: NestedScrollView(
-        headerSliverBuilder: _buildHeader,
-        body: MerchantListPage(),
-      ),
+      navigationBar: _buildAppBar(context),
+      child: MerchantListPage(),
     );
   }
 
-  List<Widget> _buildHeader(context, isScrolled) {
-    // When scroll bottom, hide search input
-    // When scroll to top, show search input
-    if (isScrolled) {
-      isSearch = false;
-    } else {
-      isSearch = true;
-    }
-
-    return [
-      SliverAppBar(
-        pinned: true,
-        collapsedHeight: isSearch ? 115 : kToolbarHeight + 1,
-        forceElevated: true,
-        textTheme: customTextTheme,
-        flexibleSpace: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            if (this.isSearch) ...[
-              CustomSearch(
-                placeholder: 'Dimana tempat makan favoritemu?',
-                onChanged: (value) {
-                  // When change input
-                },
-                onFieldSubmit: (value) {
-                  // When click done on keyboard
-                },
-              ),
-            ],
-          ],
-        ),
-        title: Text(
+  Widget _buildAppBar(context) {
+    if (Platform.isIOS) {
+      return CupertinoNavigationBar(
+        leading: Text(
           'SIRESTO',
           style: Theme.of(context)
               .textTheme
               .headline6
               .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Platform.isIOS ? CupertinoIcons.settings : Icons.settings,
-            ),
-            onPressed: () => Navigator.pushNamed(
-              context,
-              SettingsPage.routeName,
-            ),
+        trailing: IconButton(
+          icon: Icon(
+            Platform.isIOS ? CupertinoIcons.settings : Icons.settings,
           ),
-        ],
+          onPressed: () => Navigator.pushNamed(
+            context,
+            SettingsPage.routeName,
+          ),
+        ),
+      );
+    }
+    return AppBar(
+      title: Text(
+        'SIRESTO',
+        style: Theme.of(context)
+            .textTheme
+            .headline6
+            .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
       ),
-    ];
+      actions: [
+        IconButton(
+          icon: Icon(
+            Platform.isIOS ? CupertinoIcons.settings : Icons.settings,
+          ),
+          onPressed: () => Navigator.pushNamed(
+            context,
+            SettingsPage.routeName,
+          ),
+        ),
+      ],
+    );
   }
 }

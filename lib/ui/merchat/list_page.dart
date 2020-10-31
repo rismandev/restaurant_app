@@ -3,23 +3,81 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siresto_app/common/functions.dart';
+import 'package:siresto_app/common/styles.dart';
 import 'package:siresto_app/data/model/merchant.dart';
 import 'package:siresto_app/ui/merchat/detail_page.dart';
 import 'package:siresto_app/widgets/custom_card.dart';
+import 'package:siresto_app/widgets/custom_search.dart';
 
-class MerchantListPage extends StatelessWidget {
+class MerchantListPage extends StatefulWidget {
+  @override
+  _MerchantListPageState createState() => _MerchantListPageState();
+}
+
+class _MerchantListPageState extends State<MerchantListPage> {
+  TextEditingController searchController = TextEditingController();
+
+  List<Merchant> dataMerchants;
+  List<Merchant> filterMerchants;
+
+  String query;
+
+  _MerchantListPageState() {
+    searchController.addListener(() {
+      if (searchController.text.isEmpty) {
+        setState(() {
+          query = null;
+        });
+      } else {
+        setState(() {
+          query = searchController.text;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-      child: Column(
-        children: [
-          Expanded(
-            child: _buildList(context),
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: primaryBackgroundColor,
           ),
-        ],
-      ),
+          child: CustomSearch(
+            controller: searchController,
+            placeholder: 'Dimana tempat makan favoritemu?',
+            onChanged: (value) {
+              // When change input
+            },
+            onFieldSubmit: (value) {
+              // When click done on keyboard
+            },
+          ),
+        ),
+        Expanded(
+          child: query != null ? _performSearch() : _buildList(context),
+        ),
+      ],
     );
+  }
+
+  Widget _performSearch() {
+    filterMerchants = new List<Merchant>();
+
+    for (int i = 0; i < dataMerchants.length; i++) {
+      var item = dataMerchants[i];
+
+      if (item.name.toLowerCase().contains(query.toLowerCase())) {
+        filterMerchants.add(item);
+      }
+    }
+
+    if (filterMerchants.length > 0) {
+      return _buildListMerchant(filterMerchants);
+    }
+
+    return _buildItemNotFound();
   }
 
   FutureBuilder<String> _buildList(BuildContext context) {
@@ -28,25 +86,64 @@ class MerchantListPage extends StatelessWidget {
         context,
       ).loadString('assets/local_merchant.json'),
       builder: (context, snapshot) {
-        final List<Merchant> merchants = parseMerchantToList(snapshot.data);
-        return ListView.builder(
-          itemCount: merchants.length,
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-          itemBuilder: (context, index) {
-            return _buildMerchantItem(
+        dataMerchants = parseMerchantToList(snapshot.data);
+        return _buildListMerchant(dataMerchants);
+      },
+    );
+  }
+
+  ListView _buildListMerchant(List<Merchant> items) {
+    return ListView.builder(
+      itemCount: items.length,
+      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+      itemBuilder: (context, index) {
+        return _buildMerchantItem(
+          context,
+          merchant: items[index],
+          onPressed: (Merchant merchant) {
+            Navigator.pushNamed(
               context,
-              merchant: merchants[index],
-              onPressed: (Merchant merchant) {
-                Navigator.pushNamed(
-                  context,
-                  MerchantDetailPage.routeName,
-                  arguments: merchant,
-                );
-              },
+              MerchantDetailPage.routeName,
+              arguments: merchant,
             );
           },
         );
       },
+    );
+  }
+
+  Container _buildItemNotFound() {
+    return Container(
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width / 3,
+            child: Image.asset(
+              'assets/icons/icon_sad.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 5, top: 20),
+            child: Text(
+              'Tempat tidak ditemukan!!',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Text(
+            'Maaf temanku, coba cari tempat lain yaa...',
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                .copyWith(color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 

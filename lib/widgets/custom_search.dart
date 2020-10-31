@@ -4,12 +4,14 @@ class CustomSearch extends StatelessWidget {
   final ValueChanged onChanged;
   final String placeholder;
   final Function(String value) onFieldSubmit;
+  final TextEditingController controller;
 
   const CustomSearch({
     Key key,
     this.onChanged,
     this.placeholder,
     this.onFieldSubmit,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -24,6 +26,7 @@ class CustomSearch extends StatelessWidget {
       child: TextFormField(
         onChanged: onChanged,
         onFieldSubmitted: onFieldSubmit,
+        controller: controller,
         decoration: InputDecoration(
           hintText: placeholder ?? 'Search',
           contentPadding: EdgeInsets.fromLTRB(15, 5, 15, 6),

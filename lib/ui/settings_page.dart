@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Scaffold _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: Text('Pengaturan'),
       ),
       body: _buildContent(context),
     );
@@ -71,7 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
   CupertinoPageScaffold _buildIOS(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('Settings'),
+        middle: Text('Pengaturan'),
         transitionBetweenRoutes: false,
       ),
       child: _buildContent(context),
@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
       children: [
         Material(
           child: ListTile(
-            title: Text('Dark Theme'),
+            title: Text('Tema Gelap'),
             trailing: Switch.adaptive(
               value: false,
               onChanged: _onChange,
@@ -93,7 +93,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Material(
           child: ListTile(
             onTap: () => _launchInBrowser('https://github.com/rismandev/'),
-            title: Text('Visit github'),
+            title: Text('Tautan Github'),
             trailing: IconButton(
               onPressed: () {},
               icon: Icon(Icons.link),

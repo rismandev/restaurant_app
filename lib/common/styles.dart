@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final Color primaryColor = Color(0xFFDD7904);
+final Color primaryBackgroundColor = Color(0xFFDD5904);
 final Color secondaryColor = Color(0xFFFFFFFF);
 
 final TextTheme customTextTheme = TextTheme(
