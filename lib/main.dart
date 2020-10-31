@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/common/styles.dart';
-import 'package:restaurant_app/ui/main_page.dart';
-import 'package:restaurant_app/ui/merchat/detail_page.dart';
+import 'package:siresto_app/common/styles.dart';
+import 'package:siresto_app/ui/main_page.dart';
+import 'package:siresto_app/ui/merchat/detail_page.dart';
+import 'package:siresto_app/ui/settings_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SM Resto',
+      title: 'SIRESTO',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: primaryColor,
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
             merchant: ModalRoute.of(context).settings.arguments,
           );
         },
+        SettingsPage.routeName: (context) => SettingsPage(),
       },
     );
   }

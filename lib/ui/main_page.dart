@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/common/styles.dart';
-import 'package:restaurant_app/ui/merchat/list_page.dart';
-import 'package:restaurant_app/widgets/custom_platform.dart';
-import 'package:restaurant_app/widgets/custom_search.dart';
+import 'package:siresto_app/common/styles.dart';
+import 'package:siresto_app/ui/merchat/list_page.dart';
+import 'package:siresto_app/ui/settings_page.dart';
+import 'package:siresto_app/widgets/custom_platform.dart';
+import 'package:siresto_app/widgets/custom_search.dart';
 
 class MainPage extends StatefulWidget {
   static String routeName = 'main_page';
@@ -76,7 +77,7 @@ class _MainPageState extends State<MainPage> {
           ],
         ),
         title: Text(
-          'SM RESTO',
+          'SIRESTO',
           style: Theme.of(context)
               .textTheme
               .headline6
@@ -87,9 +88,10 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(
               Platform.isIOS ? CupertinoIcons.settings : Icons.settings,
             ),
-            onPressed: () {
-              // When settings clicked
-            },
+            onPressed: () => Navigator.pushNamed(
+              context,
+              SettingsPage.routeName,
+            ),
           ),
         ],
       ),

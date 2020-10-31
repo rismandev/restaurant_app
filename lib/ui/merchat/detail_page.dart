@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:restaurant_app/data/model/merchant.dart';
-import 'package:restaurant_app/widgets/custom_card.dart';
-import 'package:restaurant_app/widgets/custom_platform.dart';
+import 'package:siresto_app/data/model/merchant.dart';
+import 'package:siresto_app/widgets/custom_card.dart';
+import 'package:siresto_app/widgets/custom_platform.dart';
 
 class MerchantDetailPage extends StatefulWidget {
   static String routeName = 'detail_page';
@@ -48,6 +48,47 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
     setState(() {
       indexMenu = index;
     });
+  }
+
+  void _commingSoon() {
+    if (Platform.isAndroid) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Segera hadir!'),
+            content: Text('Fitur pemesanan akan segera hadir!'),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Oke'),
+              ),
+            ],
+          );
+        },
+      );
+    } else if (Platform.isIOS) {
+      showCupertinoDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text('Segera hadir!'),
+            content: Text('Fitur pemesanan akan segera hadir!'),
+            actions: [
+              CupertinoDialogAction(
+                child: Text('Oke'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Widget _buildDetailPage(BuildContext context) {
@@ -108,7 +149,9 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
   }
 
   ConstrainedBox _buildListMenu(
-      BuildContext context, List<MerchantMenuCategory> items) {
+    BuildContext context,
+    List<MerchantMenuCategory> items,
+  ) {
     return ConstrainedBox(
       constraints: BoxConstraints(
         minWidth: double.infinity,
@@ -127,7 +170,9 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
 
   CustomCard _buildItem(MerchantMenuCategory item, BuildContext context) {
     return CustomCard(
-      onPressed: () {},
+      onPressed: () {
+        _commingSoon();
+      },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

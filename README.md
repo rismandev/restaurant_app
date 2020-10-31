@@ -1,4 +1,4 @@
-# restaurant_app
+# siresto_app
 
 A new Flutter project.
 

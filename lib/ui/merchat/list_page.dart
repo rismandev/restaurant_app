@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/common/functions.dart';
-import 'package:restaurant_app/data/model/merchant.dart';
-import 'package:restaurant_app/ui/merchat/detail_page.dart';
-import 'package:restaurant_app/widgets/custom_card.dart';
+import 'package:siresto_app/common/functions.dart';
+import 'package:siresto_app/data/model/merchant.dart';
+import 'package:siresto_app/ui/merchat/detail_page.dart';
+import 'package:siresto_app/widgets/custom_card.dart';
 
 class MerchantListPage extends StatelessWidget {
   @override
