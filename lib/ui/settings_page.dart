@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:siresto_app/common/styles.dart';
 import 'package:siresto_app/widgets/custom_platform.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -71,7 +72,16 @@ class _SettingsPageState extends State<SettingsPage> {
   CupertinoPageScaffold _buildIOS(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('Pengaturan'),
+        actionsForegroundColor: Colors.white,
+        backgroundColor: primaryBackgroundColor,
+        border: Border.all(style: BorderStyle.none),
+        middle: Text(
+          'Pengaturan',
+          style: Theme.of(context)
+              .textTheme
+              .headline6
+              .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         transitionBetweenRoutes: false,
       ),
       child: _buildContent(context),

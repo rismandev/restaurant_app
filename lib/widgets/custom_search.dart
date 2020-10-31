@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomSearch extends StatelessWidget {
@@ -23,26 +26,34 @@ class CustomSearch extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         color: Colors.white,
       ),
-      child: TextFormField(
-        onChanged: onChanged,
-        onFieldSubmitted: onFieldSubmit,
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: placeholder ?? 'Search',
-          contentPadding: EdgeInsets.fromLTRB(15, 5, 15, 6),
-          border: _hideInputBorder(),
-          disabledBorder: _hideInputBorder(),
-          enabledBorder: _hideInputBorder(),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(
-              color: Colors.blue,
-              width: 2,
-              style: BorderStyle.solid,
+      child: Platform.isIOS
+          ? CupertinoTextField(
+              controller: controller,
+              onChanged: onChanged,
+              onSubmitted: onFieldSubmit,
+              placeholder: placeholder ?? 'Search',
+              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+            )
+          : TextFormField(
+              onChanged: onChanged,
+              onFieldSubmitted: onFieldSubmit,
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: placeholder ?? 'Search',
+                contentPadding: EdgeInsets.fromLTRB(15, 5, 15, 6),
+                border: _hideInputBorder(),
+                disabledBorder: _hideInputBorder(),
+                enabledBorder: _hideInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(
+                    color: Colors.blue,
+                    width: 2,
+                    style: BorderStyle.solid,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 

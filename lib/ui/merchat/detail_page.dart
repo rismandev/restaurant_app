@@ -60,9 +60,7 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
             content: Text('Fitur pemesanan akan segera hadir!'),
             actions: [
               FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
                 child: Text('Oke'),
               ),
             ],
@@ -80,9 +78,7 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
             actions: [
               CupertinoDialogAction(
                 child: Text('Oke'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           );
@@ -98,8 +94,22 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
         children: [
           _detailPicture(context),
           _detailTitle(context),
-          _detailLocation(context),
-          _detailRate(context),
+          _detailRow(
+            context,
+            icon: Icon(
+              Platform.isIOS ? CupertinoIcons.location : Icons.location_on,
+              size: 18,
+              color: Colors.grey,
+            ),
+            text: Container(
+              margin: EdgeInsets.only(left: 5, top: 2),
+              child: Text(
+                widget.merchant.city,
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            ),
+          ),
+          _detailRow(context),
           Container(
             margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
             child: Text(
@@ -256,49 +266,31 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
     );
   }
 
-  Container _detailRate(BuildContext context) {
+  Container _detailRow(
+    BuildContext context, {
+    Icon icon,
+    Widget text,
+  }) {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 5),
       alignment: Alignment.centerLeft,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 5, 2),
-            child: Icon(
-              Platform.isIOS ? CupertinoIcons.star : Icons.star,
-              size: 18,
-              color: Colors.yellow[800],
-            ),
-          ),
-          Text(
-            widget.merchant.rating.toString(),
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Container _detailLocation(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(20, 0, 20, 5),
-      alignment: Alignment.centerLeft,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Platform.isIOS ? CupertinoIcons.location : Icons.location_on,
-            size: 18,
-            color: Colors.grey,
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 5, top: 2),
-            child: Text(
-              widget.merchant.city,
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-          ),
+          icon ??
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 0, 5, 2),
+                child: Icon(
+                  Platform.isIOS ? CupertinoIcons.star : Icons.star,
+                  size: 18,
+                  color: Colors.yellow[800],
+                ),
+              ),
+          text ??
+              Text(
+                widget.merchant.rating.toString(),
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
         ],
       ),
     );
@@ -343,17 +335,21 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
             left: 15,
             width: 60,
             height: 60,
-            child: InkWell(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Platform.isIOS ? CupertinoIcons.arrow_left : Icons.arrow_back,
-                  color: Colors.white,
-                  size: 25,
+            child: Material(
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Platform.isIOS
+                        ? CupertinoIcons.arrow_left
+                        : Icons.arrow_back,
+                    color: Colors.white,
+                    size: 25,
+                  ),
                 ),
               ),
             ),

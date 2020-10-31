@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:siresto_app/common/styles.dart';
 import 'package:siresto_app/ui/merchat/list_page.dart';
 import 'package:siresto_app/ui/settings_page.dart';
 import 'package:siresto_app/widgets/custom_platform.dart';
@@ -34,6 +35,9 @@ class MainPage extends StatelessWidget {
   Widget _buildAppBar(context) {
     if (Platform.isIOS) {
       return CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.fromSTEB(20, 5, 20, 20),
+        border: Border.all(style: BorderStyle.none),
+        backgroundColor: primaryBackgroundColor,
         leading: Text(
           'SIRESTO',
           style: Theme.of(context)
@@ -41,11 +45,13 @@ class MainPage extends StatelessWidget {
               .headline6
               .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        trailing: IconButton(
-          icon: Icon(
-            Platform.isIOS ? CupertinoIcons.settings : Icons.settings,
+        trailing: GestureDetector(
+          child: Icon(
+            Platform.isIOS ? CupertinoIcons.settings_solid : Icons.settings,
+            color: Colors.white,
+            size: 24,
           ),
-          onPressed: () => Navigator.pushNamed(
+          onTap: () => Navigator.pushNamed(
             context,
             SettingsPage.routeName,
           ),
