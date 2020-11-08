@@ -3,19 +3,16 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:siresto_app/data/api/api_base.dart';
 import 'package:siresto_app/data/model/merchant.dart';
-import 'package:siresto_app/widgets/custom_card.dart';
+import 'package:siresto_app/data/provider/merchant_provider.dart';
 import 'package:siresto_app/widgets/custom_platform.dart';
+import 'package:siresto_app/widgets/menu_card.dart';
+import 'package:siresto_app/widgets/skeletonloader.dart';
 
 class MerchantDetailPage extends StatefulWidget {
   static String routeName = 'detail_page';
-
-  final Merchant merchant;
-
-  const MerchantDetailPage({
-    Key key,
-    @required this.merchant,
-  }) : super(key: key);
 
   @override
   _MerchantDetailPageState createState() => _MerchantDetailPageState();
@@ -26,22 +23,15 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformWidget(
-      androidBuilder: _buildAndroid,
-      iosBuilder: _buildIOS,
-    );
+    return PlatformWidget(androidBuilder: _buildAndroid, iosBuilder: _buildIOS);
   }
 
   Scaffold _buildAndroid(BuildContext context) {
-    return Scaffold(
-      body: _buildDetailPage(context),
-    );
+    return Scaffold(body: _buildDetailPage(context));
   }
 
   CupertinoPageScaffold _buildIOS(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: _buildDetailPage(context),
-    );
+    return CupertinoPageScaffold(child: _buildDetailPage(context));
   }
 
   void _changeMenu(int index) {
@@ -50,7 +40,7 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
     });
   }
 
-  void _commingSoon() {
+  void _comingSoon() {
     if (Platform.isAndroid) {
       showDialog(
         context: context,
@@ -60,8 +50,8 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
             content: Text('Fitur pemesanan akan segera hadir!'),
             actions: [
               FlatButton(
-                onPressed: () => Navigator.pop(context),
                 child: Text('Oke'),
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           );
@@ -94,22 +84,46 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
         children: [
           _detailPicture(context),
           _detailTitle(context),
-          _detailRow(
-            context,
-            icon: Icon(
-              Platform.isIOS ? CupertinoIcons.location : Icons.location_on,
-              size: 18,
-              color: Colors.grey,
-            ),
-            text: Container(
-              margin: EdgeInsets.only(left: 5, top: 2),
-              child: Text(
-                widget.merchant.city,
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
-            ),
+          Consumer<MerchantProvider>(
+            builder: (context, MerchantProvider data, child) {
+              if (data.detailMerchant != null) {
+                return _detailRow(
+                  context,
+                  icon: Icon(
+                    Platform.isIOS
+                        ? CupertinoIcons.location
+                        : Icons.location_on,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
+                  text: Container(
+                    margin: EdgeInsets.only(left: 5, top: 2),
+                    child: Text(data.detailMerchant.city,
+                        style: Theme.of(context).textTheme.bodyText2),
+                  ),
+                );
+              }
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: SkeletonLoader(width: 80, height: 8),
+              );
+            },
           ),
-          _detailRow(context),
+          Consumer<MerchantProvider>(
+            builder: (context, MerchantProvider data, child) {
+              if (data.detailMerchant != null) {
+                return _detailRow(
+                  context,
+                  text: Text(data.detailMerchant.rating.toString(),
+                      style: Theme.of(context).textTheme.bodyText2),
+                );
+              }
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: SkeletonLoader(width: 40, height: 8),
+              );
+            },
+          ),
           Container(
             margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
             child: Text(
@@ -121,11 +135,18 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
-            child: Text(
-              widget.merchant.description,
-              style: Theme.of(
-                context,
-              ).textTheme.subtitle1.copyWith(color: Colors.grey),
+            child: Consumer<MerchantProvider>(
+              builder: (context, MerchantProvider data, child) {
+                if (data.detailMerchant != null) {
+                  return Text(
+                    data.detailMerchant.description,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.subtitle1.copyWith(color: Colors.grey),
+                  );
+                }
+                return _loaderDescription();
+              },
             ),
           ),
           Container(
@@ -148,88 +169,74 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
               ],
             ),
           ),
-          if (indexMenu == 0) ...[
-            _buildListMenu(context, widget.merchant.menus.foods),
-          ] else ...[
-            _buildListMenu(context, widget.merchant.menus.drinks),
-          ],
+          Consumer<MerchantProvider>(
+            builder: (context, MerchantProvider data, child) {
+              if (data.detailMerchant != null) {
+                if (indexMenu == 0) {
+                  return _buildListMenu(
+                    context,
+                    data.detailMerchant.menus.foods,
+                  );
+                } else {
+                  return _buildListMenu(
+                    context,
+                    data.detailMerchant.menus.drinks,
+                  );
+                }
+              }
+              return Container(
+                margin: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                child: SkeletonLoader(width: double.infinity, height: 90),
+              );
+            },
+          ),
+          Container(width: double.infinity, height: 200),
         ],
       ),
     );
   }
 
-  ConstrainedBox _buildListMenu(
+  Column _loaderDescription() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          child: SkeletonLoader(width: double.infinity, height: 8),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          child: SkeletonLoader(
+            width: MediaQuery.of(context).size.width / 1.2,
+            height: 8,
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          child: SkeletonLoader(
+            width: MediaQuery.of(context).size.width / 2,
+            height: 8,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Container _buildListMenu(
     BuildContext context,
     List<MerchantMenuCategory> items,
   ) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minWidth: double.infinity,
-        minHeight: 200,
-        maxWidth: double.infinity,
-        maxHeight: items.length > 0 ? items.length * 90.0 : 120,
-      ),
+    return Container(
+      width: double.infinity,
+      height: 200,
       child: ListView.builder(
         itemCount: items.length,
-        physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-        itemBuilder: (context, index) => _buildItem(items[index], context),
-      ),
-    );
-  }
-
-  CustomCard _buildItem(MerchantMenuCategory item, BuildContext context) {
-    return CustomCard(
-      onPressed: () {
-        _commingSoon();
-      },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.fromLTRB(10, 0, 25, 2),
-            child: Icon(
-              indexMenu == 0 ? Icons.local_restaurant : Icons.local_drink_sharp,
-              color: Colors.black,
-              size: 30,
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Text(
-                    item.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 3, 2),
-                      child: Icon(
-                        Platform.isIOS
-                            ? CupertinoIcons.money_dollar
-                            : Icons.monetization_on,
-                        size: 18,
-                        color: Colors.yellow[800],
-                      ),
-                    ),
-                    Text(
-                      item.price,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+        itemBuilder: (context, index) => MenuCard(
+          item: items[index],
+          menu: indexMenu,
+          onPressed: () => _comingSoon(),
+        ),
       ),
     );
   }
@@ -259,9 +266,8 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
         style: Theme.of(
           context,
         ).textTheme.subtitle1.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isActive ? Colors.white : Colors.grey,
-            ),
+            fontWeight: FontWeight.bold,
+            color: isActive ? Colors.white : Colors.grey),
       ),
     );
   }
@@ -286,11 +292,7 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
                   color: Colors.yellow[800],
                 ),
               ),
-          text ??
-              Text(
-                widget.merchant.rating.toString(),
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
+          text ?? Text("", style: Theme.of(context).textTheme.bodyText2),
         ],
       ),
     );
@@ -300,12 +302,19 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 20, 20, 5),
       alignment: Alignment.centerLeft,
-      child: Text(
-        widget.merchant.name,
-        style: Theme.of(context)
-            .textTheme
-            .headline5
-            .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
+      child: Consumer<MerchantProvider>(
+        builder: (context, MerchantProvider data, child) {
+          if (data.detailMerchant != null) {
+            return Text(
+              data.detailMerchant.name,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
+            );
+          }
+          return SkeletonLoader(width: 150, height: 8);
+        },
       ),
     );
   }
@@ -323,12 +332,25 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25),
-            ),
-            child: Image.network(widget.merchant.pictureId, fit: BoxFit.cover),
+          Consumer<MerchantProvider>(
+            builder: (context, MerchantProvider data, _) {
+              if (data.detailMerchant != null) {
+                String image = ApiBase.baseImage +
+                    'large/' +
+                    data.detailMerchant.pictureId;
+                return ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
+                  ),
+                  child: Image.network(
+                    image,
+                    fit: BoxFit.cover,
+                  ),
+                );
+              }
+              return SkeletonLoader(width: double.infinity, height: null);
+            },
           ),
           Positioned(
             top: MediaQuery.of(context).padding.top + 10,
@@ -336,6 +358,7 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
             width: 60,
             height: 60,
             child: Material(
+              color: Colors.transparent,
               child: InkWell(
                 onTap: () => Navigator.pop(context),
                 child: Container(

@@ -8,6 +8,7 @@ class CustomSearch extends StatelessWidget {
   final String placeholder;
   final Function(String value) onFieldSubmit;
   final TextEditingController controller;
+  final Function onComplete;
 
   const CustomSearch({
     Key key,
@@ -15,6 +16,7 @@ class CustomSearch extends StatelessWidget {
     this.placeholder,
     this.onFieldSubmit,
     this.controller,
+    this.onComplete,
   }) : super(key: key);
 
   @override
@@ -31,12 +33,14 @@ class CustomSearch extends StatelessWidget {
               controller: controller,
               onChanged: onChanged,
               onSubmitted: onFieldSubmit,
+              onEditingComplete: onComplete,
               placeholder: placeholder ?? 'Search',
               padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
             )
           : TextFormField(
               onChanged: onChanged,
               onFieldSubmitted: onFieldSubmit,
+              onEditingComplete: onComplete,
               controller: controller,
               decoration: InputDecoration(
                 hintText: placeholder ?? 'Search',

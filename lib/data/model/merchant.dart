@@ -1,3 +1,36 @@
+class MerchantResult {
+  bool error;
+  String message;
+  int founded;
+  int count;
+  List<Merchant> dataList;
+  Merchant data;
+
+  MerchantResult({
+    this.error = false,
+    this.message,
+    this.founded,
+    this.count,
+    this.data,
+  });
+
+  MerchantResult.fromJson(Map<String, dynamic> json) {
+    error = json['error'];
+    message = json['message'];
+    founded = json['founded'];
+    count = json['count'];
+    if (json['restaurants'] != null) {
+      dataList = List<Merchant>();
+      json['restaurants'].forEach((merchant) {
+        dataList.add(Merchant.fromJson(merchant));
+      });
+    }
+    if (json['restaurant'] != null) {
+      data = Merchant.fromJson(json['restaurant']);
+    }
+  }
+}
+
 class Merchant {
   String id;
   String name;
@@ -28,7 +61,9 @@ class Merchant {
     } else {
       rating = double.parse(json['rating'].toString());
     }
-    menus = MerchantMenu.fromJson(json['menus']);
+    if (json["menus"] != null) {
+      menus = MerchantMenu.fromJson(json['menus']);
+    }
   }
 }
 

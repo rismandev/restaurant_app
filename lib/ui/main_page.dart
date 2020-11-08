@@ -12,17 +12,11 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformWidget(
-      androidBuilder: _buildAndroid,
-      iosBuilder: _buildIOS,
-    );
+    return PlatformWidget(androidBuilder: _buildAndroid, iosBuilder: _buildIOS);
   }
 
   Scaffold _buildAndroid(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: MerchantListPage(),
-    );
+    return Scaffold(appBar: _buildAppBar(context), body: MerchantListPage());
   }
 
   CupertinoPageScaffold _buildIOS(BuildContext context) {
@@ -51,10 +45,7 @@ class MainPage extends StatelessWidget {
             color: Colors.white,
             size: 24,
           ),
-          onTap: () => Navigator.pushNamed(
-            context,
-            SettingsPage.routeName,
-          ),
+          onTap: () => Navigator.pushNamed(context, SettingsPage.routeName),
         ),
       );
     }
@@ -71,10 +62,7 @@ class MainPage extends StatelessWidget {
           icon: Icon(
             Platform.isIOS ? CupertinoIcons.settings : Icons.settings,
           ),
-          onPressed: () => Navigator.pushNamed(
-            context,
-            SettingsPage.routeName,
-          ),
+          onPressed: () => Navigator.pushNamed(context, SettingsPage.routeName),
         ),
       ],
     );

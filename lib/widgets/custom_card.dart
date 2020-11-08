@@ -27,16 +27,10 @@ class CustomCard extends StatelessWidget {
       ),
       child: RaisedButton(
         padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         color: Colors.white,
-        highlightColor: Theme.of(
-          context,
-        ).primaryColor.withOpacity(0.15),
-        splashColor: Theme.of(
-          context,
-        ).primaryColor,
+        highlightColor: Theme.of(context).primaryColor.withOpacity(0.15),
+        splashColor: Theme.of(context).primaryColor,
         elevation: 0,
         hoverElevation: 0,
         highlightElevation: 0,

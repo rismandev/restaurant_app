@@ -23,10 +23,8 @@ class _SettingsPageState extends State<SettingsPage> {
             content: Text('Fitur ini akan segera hadir!'),
             actions: [
               FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
                 child: Text('Oke'),
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           );
@@ -54,17 +52,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformWidget(
-      androidBuilder: _buildAndroid,
-      iosBuilder: _buildIOS,
-    );
+    return PlatformWidget(androidBuilder: _buildAndroid, iosBuilder: _buildIOS);
   }
 
   Scaffold _buildAndroid(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Pengaturan'),
-      ),
+      appBar: AppBar(title: Text('Pengaturan')),
       body: _buildContent(context),
     );
   }
@@ -94,10 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Material(
           child: ListTile(
             title: Text('Tema Gelap'),
-            trailing: Switch.adaptive(
-              value: false,
-              onChanged: _onChange,
-            ),
+            trailing: Switch.adaptive(value: false, onChanged: _onChange),
           ),
         ),
         Material(

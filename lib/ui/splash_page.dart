@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:siresto_app/common/navigation.dart';
 import 'package:siresto_app/common/styles.dart';
 import 'package:siresto_app/ui/main_page.dart';
 import 'package:siresto_app/widgets/custom_platform.dart';
@@ -21,32 +22,21 @@ class _SplashPageState extends State<SplashPage> {
 
   Future _goToMainPage() async {
     await Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        MainPage.routeName,
-        (route) => false,
-      );
+      Navigation.pushAndRemove(MainPage.routeName);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return PlatformWidget(
-      androidBuilder: _buildAndroid,
-      iosBuilder: _buildIOS,
-    );
+    return PlatformWidget(androidBuilder: _buildAndroid, iosBuilder: _buildIOS);
   }
 
   Scaffold _buildAndroid(BuildContext context) {
-    return Scaffold(
-      body: _buildSplash(context),
-    );
+    return Scaffold(body: _buildSplash(context));
   }
 
   CupertinoPageScaffold _buildIOS(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: _buildSplash(context),
-    );
+    return CupertinoPageScaffold(child: _buildSplash(context));
   }
 
   Widget _buildSplash(BuildContext context) {
