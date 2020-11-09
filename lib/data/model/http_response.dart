@@ -3,9 +3,5 @@ class HttpResponseModel {
   String message;
   dynamic result;
 
-  HttpResponseModel({
-    this.statusCode,
-    this.message,
-    this.result,
-  });
+  HttpResponseModel({this.statusCode, this.message, this.result});
 }

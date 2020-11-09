@@ -1,16 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:siresto_app/common/enum.dart';
-import 'package:siresto_app/common/navigation.dart';
-import 'package:siresto_app/common/styles.dart';
+import 'package:siresto_app/common/index.dart';
 import 'package:siresto_app/data/api/api_merchant.dart';
 import 'package:siresto_app/data/model/merchant.dart';
 import 'package:siresto_app/data/provider/merchant_provider.dart';
 import 'package:siresto_app/ui/merchat/detail_page.dart';
-import 'package:siresto_app/widgets/custom_search.dart';
-import 'package:siresto_app/widgets/merchant_card.dart';
-import 'package:siresto_app/widgets/notfound.dart';
+import 'package:siresto_app/widgets/index.dart';
 
 class MerchantListPage extends StatefulWidget {
   @override
@@ -101,6 +97,8 @@ class _MerchantListPageState extends State<MerchantListPage> {
             merchantProvider.fetchDetailMerchant(merchant.id).then((value) {
               if (value is Merchant) {
                 Navigation.navigate(MerchantDetailPage.routeName);
+                MerchantProvider.reviewNameController.clear();
+                MerchantProvider.reviewTextController.clear();
               }
             });
           },

@@ -1,7 +1,18 @@
 import 'package:siresto_app/data/api/api_base.dart';
-import 'package:siresto_app/data/model/http_response.dart';
-import 'package:siresto_app/data/model/merchant.dart';
-import 'package:siresto_app/data/model/review.dart';
+import 'package:siresto_app/data/model/index.dart';
+
+/*  Merchant Api Request
+    [fetchAllMerchant] => Get List All Merchant
+    [fetchDetailMerchant] => Get Detail Merchant by id
+    [searchMerchant] => Search Merchant with query
+    [addCustomerReview] => Add Customer Reviews
+
+    Date Created                      Date Updated
+    08 November 2020                  09 November 2020
+
+    Created by                        Updated by
+    Risman Abdilah                    Risman Abdilah
+*/
 
 class ApiMerchant extends ApiBase {
   Future<MerchantResult> fetchAllMerchant() async {
@@ -31,10 +42,10 @@ class ApiMerchant extends ApiBase {
     }
   }
 
-  Future<ReviewResult> addCustomerReview(CustomerReview data) async {
-    HttpResponseModel response = await this.post('review', body: data.toJson());
+  Future<CustomerReviewResult> addCustomerReview(CustomerReview data) async {
+    HttpResponseModel response = await this.post('review', data: data);
     if (response.statusCode == 200) {
-      return ReviewResult.fromJson(response.result);
+      return CustomerReviewResult.fromJson(response.result);
     } else {
       throw Exception(response.message);
     }

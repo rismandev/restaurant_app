@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:siresto_app/common/styles.dart';
+import 'package:siresto_app/common/index.dart';
 import 'package:siresto_app/ui/merchat/list_page.dart';
 import 'package:siresto_app/ui/settings_page.dart';
-import 'package:siresto_app/widgets/custom_platform.dart';
+import 'package:siresto_app/widgets/index.dart';
 
 class MainPage extends StatelessWidget {
   static String routeName = 'main_page';
@@ -45,7 +45,7 @@ class MainPage extends StatelessWidget {
             color: Colors.white,
             size: 24,
           ),
-          onTap: () => Navigator.pushNamed(context, SettingsPage.routeName),
+          onTap: () => Navigation.navigate(SettingsPage.routeName),
         ),
       );
     }
@@ -62,7 +62,7 @@ class MainPage extends StatelessWidget {
           icon: Icon(
             Platform.isIOS ? CupertinoIcons.settings : Icons.settings,
           ),
-          onPressed: () => Navigator.pushNamed(context, SettingsPage.routeName),
+          onPressed: () => Navigation.navigate(SettingsPage.routeName),
         ),
       ],
     );

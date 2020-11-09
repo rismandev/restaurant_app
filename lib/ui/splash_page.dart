@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:siresto_app/common/navigation.dart';
-import 'package:siresto_app/common/styles.dart';
+import 'package:siresto_app/common/index.dart';
 import 'package:siresto_app/ui/main_page.dart';
-import 'package:siresto_app/widgets/custom_platform.dart';
+import 'package:siresto_app/widgets/index.dart';
 
 class SplashPage extends StatefulWidget {
   static String routeName = 'splash_page';

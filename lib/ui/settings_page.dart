@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:siresto_app/common/styles.dart';
-import 'package:siresto_app/widgets/custom_platform.dart';
+import 'package:siresto_app/common/index.dart';
+import 'package:siresto_app/widgets/index.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -13,43 +12,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  _onChange(bool value) {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Segera hadir!'),
-            content: Text('Fitur ini akan segera hadir!'),
-            actions: [
-              FlatButton(
-                child: Text('Oke'),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          );
-        },
-      );
-    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      showCupertinoDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text('Segera hadir!'),
-            content: Text('Fitur ini akan segera hadir!'),
-            actions: [
-              CupertinoDialogAction(
-                child: Text('Oke'),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(androidBuilder: _buildAndroid, iosBuilder: _buildIOS);
@@ -87,7 +49,10 @@ class _SettingsPageState extends State<SettingsPage> {
         Material(
           child: ListTile(
             title: Text('Tema Gelap'),
-            trailing: Switch.adaptive(value: false, onChanged: _onChange),
+            trailing: Switch.adaptive(
+              value: false,
+              onChanged: (value) => comingSoon(context),
+            ),
           ),
         ),
         Material(

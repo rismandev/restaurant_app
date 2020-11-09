@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class SkeletonLoader extends StatefulWidget {
   final double width;
   final double height;
+  final bool disableBorder;
   final bool isCircle;
 
   SkeletonLoader({
@@ -11,6 +12,7 @@ class SkeletonLoader extends StatefulWidget {
     @required this.width,
     @required this.height,
     this.isCircle = false,
+    this.disableBorder = false,
   }) : super(key: key);
 
   @override
@@ -54,7 +56,9 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
       width: widget.width,
       height: widget.height,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(widget.isCircle ? 100 / 2 : 10.0),
+        borderRadius: widget.disableBorder
+            ? BorderRadius.zero
+            : BorderRadius.circular(widget.isCircle ? 100 / 2 : 10.0),
         gradient: LinearGradient(
           begin: Alignment(this.gradientPosition.value, 0),
           end: Alignment(-1, 0),

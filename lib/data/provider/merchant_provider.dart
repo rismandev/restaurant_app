@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:siresto_app/common/enum.dart';
 import 'package:siresto_app/data/api/api_merchant.dart';
-import 'package:siresto_app/data/model/merchant.dart';
+import 'package:siresto_app/data/model/index.dart';
+
+/*  Merchant Provider Function
+    [GET, POST] => RETURN dynamic response
+    [_baseUrl] => Change this for More Project
+    [baseImage] => Change this for More Project Image path
+    [headers] => Change this for Request Headers
+    [responseHandler] => Function to handling all response,
+                       You can customize this.
+
+    Date Created                      Date Updated
+    08 November 2020                  09 November 2020
+
+    Created by                        Updated by
+    Risman Abdilah                    Risman Abdilah
+*/
 
 class MerchantProvider extends ChangeNotifier {
   static TextEditingController searchController = TextEditingController();
+  static TextEditingController reviewNameController = TextEditingController();
+  static TextEditingController reviewTextController = TextEditingController();
+
   final ApiMerchant apiMerchant;
 
   MerchantProvider({@required this.apiMerchant}) {
@@ -36,7 +54,7 @@ class MerchantProvider extends ChangeNotifier {
         return _listMerchant = result.dataList;
       } else {
         _state = ResultState.NoData;
-        _message = "Merchant not found";
+        _message = "Restoran tidak ditemukan";
         notifyListeners();
         return result.message;
       }
@@ -60,7 +78,7 @@ class MerchantProvider extends ChangeNotifier {
         return _filterMerchant = result.dataList;
       } else {
         _state = ResultState.NoData;
-        _message = "Merchant not found";
+        _message = "Restoran tidak ditemukan";
         notifyListeners();
         return result.message;
       }
@@ -83,7 +101,52 @@ class MerchantProvider extends ChangeNotifier {
         return _detailMerchant = result.data;
       } else {
         _detailState = ResultState.NoData;
-        _message = "Merchant not found";
+        _message = "Restoran tidak ditemukan";
+        notifyListeners();
+        return result.message;
+      }
+    } catch (e) {
+      _detailState = ResultState.Error;
+      _message = "Error $e";
+      notifyListeners();
+      return "ERROR $e";
+    }
+  }
+
+  Future<dynamic> addCustomerReview() async {
+    String name = reviewNameController.text;
+    String review = reviewTextController.text;
+    String id = _detailMerchant.id;
+    CustomerReview data = CustomerReview(
+      merchantId: id,
+      name: name,
+      review: review,
+    );
+    if (name.isEmpty) {
+      return "Nama tidak boleh kosong";
+    } else if (review.isEmpty) {
+      return "Silahkan masukkan review";
+    }
+    _detailState = ResultState.Loading;
+    notifyListeners();
+    try {
+      CustomerReviewResult result = await apiMerchant.addCustomerReview(data);
+      if (!result.error) {
+        if (result.data != null) {
+          _detailState = ResultState.HasData;
+          _detailMerchant.customerReviews = result.data.reversed.toList();
+          reviewNameController.clear();
+          reviewTextController.clear();
+          notifyListeners();
+        } else {
+          _detailState = ResultState.NoData;
+          _detailMerchant.customerReviews = List<CustomerReview>();
+          notifyListeners();
+        }
+        return result.data;
+      } else {
+        _detailState = ResultState.Error;
+        _message = result.message;
         notifyListeners();
         return result.message;
       }

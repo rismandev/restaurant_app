@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:siresto_app/common/navigation.dart';
-import 'package:siresto_app/common/styles.dart';
+import 'package:siresto_app/common/index.dart';
 import 'package:siresto_app/data/api/api_merchant.dart';
 import 'package:siresto_app/data/provider/merchant_provider.dart';
 import 'package:siresto_app/ui/main_page.dart';

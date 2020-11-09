@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siresto_app/data/api/api_base.dart';
 import 'package:siresto_app/data/model/merchant.dart';
-import 'package:siresto_app/widgets/custom_card.dart';
+import 'package:siresto_app/widgets/index.dart';
 
 class MerchantCard extends StatelessWidget {
   final Merchant merchant;

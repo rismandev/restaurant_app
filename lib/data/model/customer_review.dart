@@ -1,15 +1,11 @@
-class ReviewResult {
+class CustomerReviewResult {
   bool error;
   String message;
   List<CustomerReview> data;
 
-  ReviewResult({
-    this.error = false,
-    this.message,
-    this.data,
-  });
+  CustomerReviewResult({this.error = false, this.message, this.data});
 
-  ReviewResult.fromJson(Map<String, dynamic> json) {
+  CustomerReviewResult.fromJson(Map<String, dynamic> json) {
     error = json["error"];
     message = json["message"];
     if (json["customerReviews"] != null) {
@@ -27,12 +23,7 @@ class CustomerReview {
   String date;
   String merchantId;
 
-  CustomerReview({
-    this.name,
-    this.review,
-    this.date,
-    this.merchantId,
-  });
+  CustomerReview({this.name, this.review, this.date, this.merchantId});
 
   factory CustomerReview.fromJson(Map<String, dynamic> json) => CustomerReview(
         name: json["name"],
@@ -41,10 +32,10 @@ class CustomerReview {
       );
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> data = Map<String, dynamic>();
-    data["id"] = merchantId;
-    data["name"] = name;
-    data["review"] = review;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = merchantId;
+    data['name'] = name;
+    data['review'] = review;
     return data;
   }
 }

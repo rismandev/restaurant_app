@@ -1,3 +1,5 @@
+import 'package:siresto_app/data/model/customer_review.dart';
+
 class MerchantResult {
   bool error;
   String message;
@@ -11,6 +13,7 @@ class MerchantResult {
     this.message,
     this.founded,
     this.count,
+    this.dataList,
     this.data,
   });
 
@@ -39,6 +42,7 @@ class Merchant {
   String city;
   double rating;
   MerchantMenu menus;
+  List<CustomerReview> customerReviews;
 
   Merchant({
     this.id,
@@ -48,6 +52,7 @@ class Merchant {
     this.city,
     this.rating,
     this.menus,
+    this.customerReviews,
   });
 
   Merchant.fromJson(Map<String, dynamic> json) {
@@ -63,6 +68,12 @@ class Merchant {
     }
     if (json["menus"] != null) {
       menus = MerchantMenu.fromJson(json['menus']);
+    }
+    if (json["customerReviews"] != null) {
+      customerReviews = List<CustomerReview>();
+      json["customerReviews"].reversed.forEach((review) {
+        customerReviews.add(CustomerReview.fromJson(review));
+      });
     }
   }
 }
