@@ -1,28 +1,25 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:siresto_app/common/enum.dart';
 import 'package:siresto_app/data/api/api_merchant.dart';
 import 'package:siresto_app/data/model/index.dart';
 
 /*  Merchant Provider Function
-    [GET, POST] => RETURN dynamic response
-    [_baseUrl] => Change this for More Project
-    [baseImage] => Change this for More Project Image path
-    [headers] => Change this for Request Headers
-    [responseHandler] => Function to handling all response,
-                       You can customize this.
+    Handle Logic Data Merchant
+    [_fetchAllMerchant] => Get List All Merchant
+    [searchMerchant] => Search Merchant by query name
+    [fetchDetailMerchant] => Get Detail Merchant by id
+    [addCustomerReview] => Add Review for Customer
 
     Date Created                      Date Updated
-    08 November 2020                  09 November 2020
+    08 November 2020                  15 November 2020
 
     Created by                        Updated by
     Risman Abdilah                    Risman Abdilah
 */
 
 class MerchantProvider extends ChangeNotifier {
-  static TextEditingController searchController = TextEditingController();
-  static TextEditingController reviewNameController = TextEditingController();
-  static TextEditingController reviewTextController = TextEditingController();
-
   final ApiMerchant apiMerchant;
 
   MerchantProvider({@required this.apiMerchant}) {
@@ -58,6 +55,11 @@ class MerchantProvider extends ChangeNotifier {
         notifyListeners();
         return result.message;
       }
+    } on SocketException {
+      _state = ResultState.Error;
+      _message = "Ohhh maaf teman, sepertinya koneksi kamu bermasalah!";
+      notifyListeners();
+      return _message;
     } catch (e) {
       _state = ResultState.Error;
       _message = "Error $e";
@@ -66,11 +68,12 @@ class MerchantProvider extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> searchMerchant() async {
+  Future<dynamic> searchMerchant({
+    @required String query,
+  }) async {
     _state = ResultState.Loading;
     notifyListeners();
     try {
-      String query = searchController.text;
       MerchantResult result = await apiMerchant.searchMerchant(query);
       if (result.dataList.isNotEmpty) {
         _state = ResultState.HasData;
@@ -113,9 +116,10 @@ class MerchantProvider extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> addCustomerReview() async {
-    String name = reviewNameController.text;
-    String review = reviewTextController.text;
+  Future<dynamic> addCustomerReview({
+    String name = '',
+    String review = '',
+  }) async {
     String id = _detailMerchant.id;
     CustomerReview data = CustomerReview(
       merchantId: id,
@@ -123,9 +127,9 @@ class MerchantProvider extends ChangeNotifier {
       review: review,
     );
     if (name.isEmpty) {
-      return "Nama tidak boleh kosong";
+      return "Silahkan masukkan nama!";
     } else if (review.isEmpty) {
-      return "Silahkan masukkan review";
+      return "Silahkan masukkan ulasan!";
     }
     _detailState = ResultState.Loading;
     notifyListeners();
@@ -135,8 +139,6 @@ class MerchantProvider extends ChangeNotifier {
         if (result.data != null) {
           _detailState = ResultState.HasData;
           _detailMerchant.customerReviews = result.data.reversed.toList();
-          reviewNameController.clear();
-          reviewTextController.clear();
           notifyListeners();
         } else {
           _detailState = ResultState.NoData;
@@ -150,6 +152,11 @@ class MerchantProvider extends ChangeNotifier {
         notifyListeners();
         return result.message;
       }
+    } on SocketException {
+      _detailState = ResultState.Error;
+      _message = "Ohhh maaf teman, sepertinya koneksi kamu bermasalah!";
+      notifyListeners();
+      return _message;
     } catch (e) {
       _detailState = ResultState.Error;
       _message = "Error $e";

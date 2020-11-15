@@ -59,7 +59,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/local_merchant.json
     - assets/icons/
     - assets/fonts/
 

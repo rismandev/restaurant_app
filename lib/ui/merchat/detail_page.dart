@@ -22,19 +22,23 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
   MerchantProvider _merchantProvider = MerchantProvider(
     apiMerchant: ApiMerchant(),
   );
+
+  TextEditingController _reviewNameController = TextEditingController();
+  TextEditingController _reviewTextController = TextEditingController();
+
   int indexMenu = 0;
 
   @override
   void initState() {
-    MerchantProvider.reviewNameController = TextEditingController();
-    MerchantProvider.reviewTextController = TextEditingController();
+    _reviewNameController = TextEditingController();
+    _reviewTextController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    MerchantProvider.reviewNameController.dispose();
-    MerchantProvider.reviewTextController.dispose();
+    _reviewNameController.dispose();
+    _reviewTextController.dispose();
     print('Disposed');
     super.dispose();
   }
@@ -62,16 +66,19 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
   }
 
   _handleSendReview() async {
-    _merchantProvider.addCustomerReview().then((value) async {
+    String name = _reviewNameController.text;
+    String review = _reviewTextController.text;
+    _merchantProvider
+        .addCustomerReview(name: name, review: review)
+        .then((value) async {
       if (value is List) {
-        await Future.delayed(Duration(seconds: 1), () {
-          showCustomSnackBar(
-            context,
-            text: "Berhasil mengirim ulasan",
-          );
+        _reviewNameController.clear();
+        _reviewTextController.clear();
+        await Future.delayed(Duration(milliseconds: 300), () {
+          showCustomSnackBar(context, text: "Berhasil mengirim ulasan");
         });
       } else {
-        await Future.delayed(Duration(seconds: 1), () {
+        await Future.delayed(Duration(milliseconds: 300), () {
           showCustomSnackBar(
             context,
             text: value,
@@ -94,16 +101,26 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
           _detailRating(),
           Container(
             margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
-            child: Text(
-              'Deskripsi',
-              style: Theme.of(
-                context,
-              ).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold),
+            child: Consumer<MerchantProvider>(
+              builder: (context, provider, child) {
+                if (provider.detailState == ResultState.Loading) {
+                  return SkeletonLoader(
+                    width: 110,
+                    height: 10,
+                  );
+                }
+                return Text(
+                  'Deskripsi',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold),
+                );
+              },
             ),
           ),
           _detailDescription(),
           Container(
-            margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
+            margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Row(
               children: [
                 _buildButtonMenu(
@@ -149,48 +166,98 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
-            child: CustomField(
-              hintText: "Masukkan nama",
-              controller: MerchantProvider.reviewNameController,
-            ),
+          Consumer<MerchantProvider>(
+            builder: (context, provider, child) {
+              if (provider.detailState == ResultState.Loading) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
+                  child: SkeletonLoader(
+                    width: double.infinity,
+                    height: 45,
+                  ),
+                );
+              }
+              return Container(
+                padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
+                child: CustomField(
+                  hintText: "Masukkan nama",
+                  controller: _reviewNameController,
+                ),
+              );
+            },
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-            child: CustomField(
-              maxLines: 5,
-              hintText: "Masukkan ulasan",
-              controller: MerchantProvider.reviewTextController,
-            ),
+          Consumer<MerchantProvider>(
+            builder: (context, provider, child) {
+              if (provider.detailState == ResultState.Loading) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  child: SkeletonLoader(
+                    width: double.infinity,
+                    height: 80,
+                  ),
+                );
+              }
+              return Container(
+                padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                child: CustomField(
+                  maxLines: 5,
+                  hintText: "Masukkan ulasan",
+                  controller: _reviewTextController,
+                ),
+              );
+            },
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-            child: RaisedButton(
-              onPressed: _handleSendReview,
-              color: Colors.green[800],
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                'Kirim',
-                style: Theme.of(context)
-                    .textTheme
-                    .button
-                    .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
-              ),
-            ),
+          Consumer<MerchantProvider>(
+            builder: (context, provider, child) {
+              if (provider.detailState == ResultState.Loading) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  child: SkeletonLoader(
+                    width: 100,
+                    height: 40,
+                  ),
+                );
+              }
+              return Container(
+                padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                child: RaisedButton(
+                  onPressed: _handleSendReview,
+                  color: Colors.green[800],
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    'Kirim',
+                    style: Theme.of(context).textTheme.button.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              );
+            },
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(15, 5, 15, 10),
-            child: Text(
-              "Ulasan",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline6.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).primaryColor),
-            ),
+          Consumer<MerchantProvider>(
+            builder: (context, provider, child) {
+              if (provider.detailState == ResultState.Loading) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(15, 15, 15, 10),
+                  child: SkeletonLoader(
+                    width: 100,
+                    height: 10,
+                  ),
+                );
+              }
+              return Padding(
+                padding: EdgeInsets.fromLTRB(15, 5, 15, 10),
+                child: Text(
+                  "Ulasan",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).primaryColor),
+                ),
+              );
+            },
           ),
           _buildListReview(),
         ],
@@ -201,7 +268,28 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
   Widget _buildListReview() {
     return Consumer<MerchantProvider>(
       builder: (context, MerchantProvider data, child) {
-        if (data.detailState == ResultState.HasData) {
+        if (data.detailState == ResultState.Loading) {
+          return Container(
+            height: 160.0,
+            child: ListView.builder(
+              itemCount: 2,
+              padding: EdgeInsets.zero,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return Container(
+                  height: 70,
+                  margin: EdgeInsets.only(top: 10),
+                  child: SkeletonLoader(
+                    disableBorder: true,
+                    width: double.infinity,
+                    isCircle: false,
+                    height: 70,
+                  ),
+                );
+              },
+            ),
+          );
+        } else {
           List<CustomerReview> items = data.detailMerchant.customerReviews;
           double sizeHeight = items.length > 0 ? 80.0 * items.length : 0;
           return ConstrainedBox(
@@ -218,27 +306,6 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
             ),
           );
         }
-
-        return Container(
-          height: 160.0,
-          child: ListView.builder(
-            itemCount: 2,
-            padding: EdgeInsets.zero,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return Container(
-                height: 70,
-                margin: EdgeInsets.only(top: 10),
-                child: SkeletonLoader(
-                  disableBorder: true,
-                  width: double.infinity,
-                  isCircle: false,
-                  height: 70,
-                ),
-              );
-            },
-          ),
-        );
       },
     );
   }
@@ -246,17 +313,18 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
   Consumer<MerchantProvider> _detailMenu() {
     return Consumer<MerchantProvider>(
       builder: (context, MerchantProvider data, child) {
-        if (data.detailState == ResultState.HasData) {
+        if (data.detailState == ResultState.Loading) {
+          return Container(
+            margin: EdgeInsets.fromLTRB(20, 5, 20, 10),
+            child: SkeletonLoader(width: double.infinity, height: 90),
+          );
+        } else {
           if (indexMenu == 0) {
             return _buildListMenu(context, data.detailMerchant.menus.foods);
           } else {
             return _buildListMenu(context, data.detailMerchant.menus.drinks);
           }
         }
-        return Container(
-          margin: EdgeInsets.fromLTRB(20, 5, 20, 10),
-          child: SkeletonLoader(width: double.infinity, height: 90),
-        );
       },
     );
   }
@@ -266,15 +334,15 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
       margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
       child: Consumer<MerchantProvider>(
         builder: (context, MerchantProvider data, child) {
-          if (data.detailState == ResultState.HasData) {
-            return Text(
-              data.detailMerchant.description,
-              style: Theme.of(
-                context,
-              ).textTheme.subtitle1.copyWith(color: Colors.grey),
-            );
+          if (data.detailState == ResultState.Loading) {
+            return _loaderDescription();
           }
-          return _loaderDescription();
+          return Text(
+            data.detailMerchant.description,
+            style: Theme.of(
+              context,
+            ).textTheme.subtitle1.copyWith(color: Colors.grey),
+          );
         },
       ),
     );
@@ -283,16 +351,16 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
   Consumer<MerchantProvider> _detailRating() {
     return Consumer<MerchantProvider>(
       builder: (context, MerchantProvider data, child) {
-        if (data.detailState == ResultState.HasData) {
-          return _detailRow(
-            context,
-            text: Text(data.detailMerchant.rating.toString(),
-                style: Theme.of(context).textTheme.bodyText2),
+        if (data.detailState == ResultState.Loading) {
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: SkeletonLoader(width: 40, height: 8),
           );
         }
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          child: SkeletonLoader(width: 40, height: 8),
+        return _detailRow(
+          context,
+          text: Text(data.detailMerchant.rating.toString(),
+              style: Theme.of(context).textTheme.bodyText2),
         );
       },
     );
@@ -301,24 +369,24 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
   Consumer<MerchantProvider> _detailLocation() {
     return Consumer<MerchantProvider>(
       builder: (context, MerchantProvider data, child) {
-        if (data.detailState == ResultState.HasData) {
-          return _detailRow(
-            context,
-            icon: Icon(
-              Platform.isIOS ? CupertinoIcons.location : Icons.location_on,
-              size: 18,
-              color: Colors.grey,
-            ),
-            text: Container(
-              margin: EdgeInsets.only(left: 5, top: 2),
-              child: Text(data.detailMerchant.city,
-                  style: Theme.of(context).textTheme.bodyText2),
-            ),
+        if (data.detailState == ResultState.Loading) {
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: SkeletonLoader(width: 80, height: 8),
           );
         }
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: SkeletonLoader(width: 80, height: 8),
+        return _detailRow(
+          context,
+          icon: Icon(
+            Platform.isIOS ? CupertinoIcons.location : Icons.location_on,
+            size: 18,
+            color: Colors.grey,
+          ),
+          text: Container(
+            margin: EdgeInsets.only(left: 5, top: 2),
+            child: Text(data.detailMerchant.city,
+                style: Theme.of(context).textTheme.bodyText2),
+          ),
         );
       },
     );
@@ -340,6 +408,10 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
         Container(
           margin: EdgeInsets.symmetric(vertical: 5),
           child: SkeletonLoader(width: sizeWidth / 2, height: 8),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          child: SkeletonLoader(width: sizeWidth / 1.2, height: 8),
         ),
       ],
     );
@@ -367,34 +439,47 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
     );
   }
 
-  RaisedButton _buildButtonMenu(
+  Widget _buildButtonMenu(
     BuildContext context, {
     Function onPressed,
     String text,
     bool isActive = false,
   }) {
-    return RaisedButton(
-      onPressed: onPressed ?? () {},
-      color: isActive ? Theme.of(context).primaryColor : Colors.white,
-      elevation: 0,
-      highlightElevation: 0,
-      hoverElevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: BorderSide(
-          color: Colors.grey.withOpacity(0.3),
-          width: 1.5,
-          style: isActive ? BorderStyle.none : BorderStyle.solid,
-        ),
-      ),
-      child: Text(
-        text ?? 'Button',
-        style: Theme.of(
-          context,
-        ).textTheme.subtitle1.copyWith(
-            fontWeight: FontWeight.bold,
-            color: isActive ? Colors.white : Colors.grey),
-      ),
+    return Consumer<MerchantProvider>(
+      builder: (context, provider, child) {
+        if (provider.detailState == ResultState.Loading) {
+          return Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: SkeletonLoader(
+              width: 100,
+              height: 40,
+            ),
+          );
+        }
+        return RaisedButton(
+          onPressed: onPressed ?? () {},
+          color: isActive ? Theme.of(context).primaryColor : Colors.white,
+          elevation: 0,
+          highlightElevation: 0,
+          hoverElevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side: BorderSide(
+              color: Colors.grey.withOpacity(0.3),
+              width: 1.5,
+              style: isActive ? BorderStyle.none : BorderStyle.solid,
+            ),
+          ),
+          child: Text(
+            text ?? 'Button',
+            style: Theme.of(
+              context,
+            ).textTheme.subtitle1.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isActive ? Colors.white : Colors.grey),
+          ),
+        );
+      },
     );
   }
 
@@ -430,16 +515,16 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
       alignment: Alignment.centerLeft,
       child: Consumer<MerchantProvider>(
         builder: (context, MerchantProvider data, child) {
-          if (data.detailState == ResultState.HasData) {
-            return Text(
-              data.detailMerchant.name,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
-            );
+          if (data.detailState == ResultState.Loading) {
+            return SkeletonLoader(width: 150, height: 15);
           }
-          return SkeletonLoader(width: 150, height: 8);
+          return Text(
+            data.detailMerchant.name,
+            style: Theme.of(context)
+                .textTheme
+                .headline5
+                .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
+          );
         },
       ),
     );
@@ -460,7 +545,9 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
         children: [
           Consumer<MerchantProvider>(
             builder: (context, MerchantProvider data, _) {
-              if (data.detailState == ResultState.HasData) {
+              if (data.detailState == ResultState.Loading) {
+                return SkeletonLoader(width: double.infinity, height: null);
+              } else {
                 String image = ApiBase.baseImage +
                     'large/' +
                     data.detailMerchant.pictureId;
@@ -475,7 +562,6 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
                   ),
                 );
               }
-              return SkeletonLoader(width: double.infinity, height: null);
             },
           ),
           Positioned(

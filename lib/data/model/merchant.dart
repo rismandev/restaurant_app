@@ -80,13 +80,11 @@ class Merchant {
 
 class MerchantMenuCategory {
   String name;
-  String price;
 
-  MerchantMenuCategory({this.name, this.price});
+  MerchantMenuCategory({this.name});
 
   MerchantMenuCategory.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    price = json['price'];
   }
 }
 

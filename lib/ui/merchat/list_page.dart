@@ -18,17 +18,19 @@ class _MerchantListPageState extends State<MerchantListPage> {
     apiMerchant: ApiMerchant(),
   );
 
+  TextEditingController _searchController = TextEditingController();
+
   String query;
 
   _MerchantListPageState() {
-    MerchantProvider.searchController.addListener(() {
-      if (MerchantProvider.searchController.text.isEmpty) {
+    _searchController.addListener(() {
+      if (_searchController.text.isEmpty) {
         setState(() {
           query = null;
         });
       } else {
         setState(() {
-          query = MerchantProvider.searchController.text;
+          query = _searchController.text;
         });
       }
     });
@@ -36,7 +38,7 @@ class _MerchantListPageState extends State<MerchantListPage> {
 
   @override
   void dispose() {
-    MerchantProvider.searchController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -48,9 +50,11 @@ class _MerchantListPageState extends State<MerchantListPage> {
         Container(
           decoration: BoxDecoration(color: primaryBackgroundColor),
           child: CustomSearch(
-            controller: MerchantProvider.searchController,
+            controller: _searchController,
             placeholder: 'Dimana tempat makan favoritemu?',
-            onChanged: (value) => merchantProvider.searchMerchant(),
+            onChanged: (value) => merchantProvider.searchMerchant(
+              query: _searchController.text,
+            ),
           ),
         ),
         Expanded(
@@ -62,12 +66,26 @@ class _MerchantListPageState extends State<MerchantListPage> {
                     : _buildListMerchant(data.listMerchant);
               } else if (data.state == ResultState.Error) {
                 return Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    data.message,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.caption.copyWith(
-                        color: Colors.red, fontWeight: FontWeight.w600),
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width / 3,
+                        margin: EdgeInsets.only(bottom: 25),
+                        child: Image.asset(
+                          'assets/icons/icon_sad.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Text(
+                        data.message,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                            color: Colors.red, fontWeight: FontWeight.w600),
+                      ),
+                    ],
                   ),
                 );
               } else if (data.state == ResultState.NoData) {
@@ -97,8 +115,6 @@ class _MerchantListPageState extends State<MerchantListPage> {
             merchantProvider.fetchDetailMerchant(merchant.id).then((value) {
               if (value is Merchant) {
                 Navigation.navigate(MerchantDetailPage.routeName);
-                MerchantProvider.reviewNameController.clear();
-                MerchantProvider.reviewTextController.clear();
               }
             });
           },
