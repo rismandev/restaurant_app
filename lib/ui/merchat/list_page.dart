@@ -112,11 +112,8 @@ class _MerchantListPageState extends State<MerchantListPage> {
         return MerchantCard(
           merchant: items[index],
           onPressed: (Merchant merchant) {
-            merchantProvider.fetchDetailMerchant(merchant.id).then((value) {
-              if (value is Merchant) {
-                Navigation.navigate(MerchantDetailPage.routeName);
-              }
-            });
+            merchantProvider.fetchDetailMerchant(merchant.id);
+            Navigation.navigate(MerchantDetailPage.routeName);
           },
         );
       },

@@ -3,12 +3,69 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siresto_app/common/index.dart';
+import 'package:siresto_app/ui/favorite_page.dart';
 import 'package:siresto_app/ui/merchat/list_page.dart';
 import 'package:siresto_app/ui/settings_page.dart';
 import 'package:siresto_app/widgets/index.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   static String routeName = 'main_page';
+
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage>
+    with SingleTickerProviderStateMixin {
+  bool isOpened = false;
+  AnimationController _animationController;
+  Animation<Color> _buttonColor;
+  Animation<double> _animationIcon;
+  Animation<double> _translateButton;
+  Curve _curve = Curves.easeOut;
+  double _fabHeight = 56.0;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    )..addListener(() {
+        setState(() {});
+      });
+
+    _animationIcon = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_animationController);
+
+    _buttonColor = ColorTween(
+      begin: primaryBackgroundColor,
+      end: Colors.white,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(0.00, 1.00, curve: Curves.linear),
+      ),
+    );
+
+    _translateButton = Tween<double>(
+      begin: _fabHeight,
+      end: -14.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(0.0, 0.75, curve: _curve),
+      ),
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +73,32 @@ class MainPage extends StatelessWidget {
   }
 
   Scaffold _buildAndroid(BuildContext context) {
-    return Scaffold(appBar: _buildAppBar(context), body: MerchantListPage());
+    return Scaffold(
+      appBar: _buildAppBar(context),
+      body: MerchantListPage(),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Transform(
+            transform: Matrix4.translationValues(
+              0.0,
+              _translateButton.value * 2.0,
+              0.0,
+            ),
+            child: buttonSettings(),
+          ),
+          Transform(
+            transform: Matrix4.translationValues(
+              0.0,
+              _translateButton.value * 1.0,
+              0.0,
+            ),
+            child: buttonFavorite(),
+          ),
+          buttonMenu()
+        ],
+      ),
+    );
   }
 
   CupertinoPageScaffold _buildIOS(BuildContext context) {
@@ -50,21 +132,64 @@ class MainPage extends StatelessWidget {
       );
     }
     return AppBar(
+      centerTitle: true,
       title: Text(
         'SIRESTO',
         style: Theme.of(context)
             .textTheme
-            .headline6
+            .headline5
             .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
       ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            Platform.isIOS ? CupertinoIcons.settings : Icons.settings,
-          ),
-          onPressed: () => Navigation.navigate(SettingsPage.routeName),
+    );
+  }
+
+  void animate() {
+    if (!isOpened) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+    isOpened = !isOpened;
+  }
+
+  Widget buttonMenu() {
+    return Container(
+      child: FloatingActionButton(
+        heroTag: "menu",
+        backgroundColor: _buttonColor.value,
+        onPressed: animate,
+        tooltip: "Menu",
+        elevation: 2,
+        child: AnimatedIcon(
+          icon: AnimatedIcons.menu_close,
+          progress: _animationIcon,
+          color: isOpened ? Colors.grey[900] : Colors.white,
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget buttonSettings() {
+    return Container(
+      child: FloatingActionButton(
+        heroTag: "settings",
+        backgroundColor: primaryBackgroundColor,
+        onPressed: () => Navigation.navigate(SettingsPage.routeName),
+        tooltip: "Pengaturan",
+        child: Icon(Icons.settings, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget buttonFavorite() {
+    return Container(
+      child: FloatingActionButton(
+        heroTag: "favorite",
+        backgroundColor: Colors.pinkAccent,
+        onPressed: () => Navigation.navigate(FavoritePage.routeName),
+        tooltip: "Favorite",
+        child: Icon(Icons.favorite, color: Colors.white),
+      ),
     );
   }
 }

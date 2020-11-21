@@ -13,7 +13,7 @@ import 'package:siresto_app/data/model/index.dart';
     [addCustomerReview] => Add Review for Customer
 
     Date Created                      Date Updated
-    08 November 2020                  15 November 2020
+    08 November 2020                  21 November 2020
 
     Created by                        Updated by
     Risman Abdilah                    Risman Abdilah
@@ -47,8 +47,9 @@ class MerchantProvider extends ChangeNotifier {
       MerchantResult result = await apiMerchant.fetchAllMerchant();
       if (result.dataList.isNotEmpty) {
         _state = ResultState.HasData;
+        _listMerchant = result.dataList;
         notifyListeners();
-        return _listMerchant = result.dataList;
+        return result.dataList;
       } else {
         _state = ResultState.NoData;
         _message = "Restoran tidak ditemukan";
@@ -77,8 +78,9 @@ class MerchantProvider extends ChangeNotifier {
       MerchantResult result = await apiMerchant.searchMerchant(query);
       if (result.dataList.isNotEmpty) {
         _state = ResultState.HasData;
+        _filterMerchant = result.dataList;
         notifyListeners();
-        return _filterMerchant = result.dataList;
+        return result.dataList;
       } else {
         _state = ResultState.NoData;
         _message = "Restoran tidak ditemukan";
@@ -95,13 +97,15 @@ class MerchantProvider extends ChangeNotifier {
 
   Future<dynamic> fetchDetailMerchant(String merchantId) async {
     _detailState = ResultState.Loading;
+    _detailMerchant = new Merchant();
     notifyListeners();
     try {
       MerchantResult result = await apiMerchant.fetchDetailMerchant(merchantId);
       if (result.data != null) {
         _detailState = ResultState.HasData;
+        _detailMerchant = result.data;
         notifyListeners();
-        return _detailMerchant = result.data;
+        return result.data;
       } else {
         _detailState = ResultState.NoData;
         _message = "Restoran tidak ditemukan";

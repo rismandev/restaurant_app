@@ -76,6 +76,29 @@ class Merchant {
       });
     }
   }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (id != null) {
+      data['id'] = id;
+    }
+    if (name != null) {
+      data['name'] = name;
+    }
+    if (description != null) {
+      data['description'] = description;
+    }
+    if (pictureId != null) {
+      data['pictureId'] = pictureId;
+    }
+    if (city != null) {
+      data['city'] = city;
+    }
+    if (rating != null) {
+      data['rating'] = rating;
+    }
+    return data;
+  }
 }
 
 class MerchantMenuCategory {

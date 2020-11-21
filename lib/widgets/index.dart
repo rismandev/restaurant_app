@@ -7,3 +7,6 @@ export 'card/merchant_card.dart';
 export 'notfound.dart';
 export 'card/review_card.dart';
 export 'skeletonloader.dart';
+export 'favorite_button.dart';
+export 'detail/detail_picture.dart';
+export 'detail/detail_review.dart';

@@ -47,9 +47,11 @@ void showCustomSnackBar(
   String text,
   Color backgroundColor,
   Color textColor,
+  Duration duration,
 }) {
   if (Platform.isAndroid) {
     final snackbar = SnackBar(
+      duration: duration ?? Duration(seconds: 2),
       backgroundColor: backgroundColor ?? Colors.green[700],
       content: Text(
         text ?? 'text',
