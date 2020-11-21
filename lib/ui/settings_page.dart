@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:siresto_app/common/index.dart';
 import 'package:siresto_app/data/provider/preferences_provider.dart';
+import 'package:siresto_app/data/provider/scheduling_provider.dart';
 import 'package:siresto_app/widgets/index.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -48,20 +49,22 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildContent(BuildContext context) {
-    return Consumer<PreferencesProvider>(
-      builder: (context, provider, child) {
+    return Consumer2<PreferencesProvider, SchedulingProvider>(
+      builder: (context, preferencesProvider, scheduleProvider, child) {
         return ListView(
           children: [
             Material(
               child: ListTile(
                 title: Text('Notifikasi'),
                 trailing: Switch.adaptive(
-                  value: provider.isDailyReminder,
+                  value: preferencesProvider.isDailyReminder,
+                  activeColor: Theme.of(context).primaryColor,
                   onChanged: (value) {
                     if (Platform.isIOS) {
                       comingSoon(context);
                     } else {
-                      provider.enableDailyReminder(value);
+                      preferencesProvider.enableDailyReminder(value);
+                      scheduleProvider.scheduleDailyNews(value);
                     }
                   },
                 ),

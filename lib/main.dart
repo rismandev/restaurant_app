@@ -1,20 +1,39 @@
+import 'dart:io';
+
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siresto_app/common/index.dart';
 import 'package:siresto_app/data/api/api_merchant.dart';
-import 'package:siresto_app/data/db/database_helper.dart';
-import 'package:siresto_app/data/preferences/preferences_helper.dart';
+import 'package:siresto_app/data/helper/database_helper.dart';
+import 'package:siresto_app/data/helper/notification_helper.dart';
+import 'package:siresto_app/data/helper/preferences_helper.dart';
 import 'package:siresto_app/data/provider/database_provider.dart';
 import 'package:siresto_app/data/provider/merchant_provider.dart';
 import 'package:siresto_app/data/provider/preferences_provider.dart';
+import 'package:siresto_app/data/provider/scheduling_provider.dart';
 import 'package:siresto_app/ui/favorite_page.dart';
 import 'package:siresto_app/ui/main_page.dart';
 import 'package:siresto_app/ui/merchat/detail_page.dart';
 import 'package:siresto_app/ui/settings_page.dart';
 import 'package:siresto_app/ui/splash_page.dart';
+import 'package:siresto_app/utils/background_service.dart';
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final NotificationHelper _notificationHelper = NotificationHelper();
+  final BackgroundService _service = BackgroundService();
+  _service.initializeIsolate();
+  if (Platform.isAndroid) {
+    await AndroidAlarmManager.initialize();
+  }
+  await _notificationHelper.initNotifications(flutterLocalNotificationsPlugin);
+
   runApp(
     MultiProvider(
       providers: [
@@ -33,6 +52,7 @@ void main() {
             databaseHelper: DatabaseHelper(),
           ),
         ),
+        ChangeNotifierProvider(create: (context) => SchedulingProvider()),
       ],
       child: MyApp(),
     ),

@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siresto_app/common/index.dart';
+import 'package:siresto_app/data/helper/notification_helper.dart';
 import 'package:siresto_app/ui/favorite_page.dart';
+import 'package:siresto_app/ui/merchat/detail_page.dart';
 import 'package:siresto_app/ui/merchat/list_page.dart';
 import 'package:siresto_app/ui/settings_page.dart';
+import 'package:siresto_app/utils/background_service.dart';
 import 'package:siresto_app/widgets/index.dart';
 
 class MainPage extends StatefulWidget {
@@ -17,6 +20,9 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
+  final NotificationHelper _notificationHelper = NotificationHelper();
+  final BackgroundService _service = BackgroundService();
+
   bool isOpened = false;
   AnimationController _animationController;
   Animation<Color> _buttonColor;
@@ -59,12 +65,17 @@ class _MainPageState extends State<MainPage>
       ),
     );
     super.initState();
+    port.listen((_) async => await _service.someTask());
+    _notificationHelper.configureSelectNotificationSubject(
+      MerchantDetailPage.routeName,
+    );
   }
 
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
+    selectNotificationSubject.close();
   }
 
   @override

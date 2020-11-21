@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:siresto_app/data/preferences/preferences_helper.dart';
+import 'package:siresto_app/data/helper/preferences_helper.dart';
+
+/*  Preferences Provider
+    Handle Action Preferences
+    [_getDailyReminderPreferences] => Bool to get daily reminder from helper
+    [enableDailyReminder] => Activate/Deactivate daily reminder to helper
+
+    Date Created                      Date Updated
+    21 November 2020                  21 November 2020
+
+    Created by                        Updated by
+    Risman Abdilah                    Risman Abdilah
+*/
 
 class PreferencesProvider extends ChangeNotifier {
   final PreferencesHelper preferencesHelper;

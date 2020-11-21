@@ -1,6 +1,22 @@
 import 'package:siresto_app/data/model/index.dart';
 import 'package:sqflite/sqflite.dart';
 
+/*  Database Helper
+    Handle Create Local Database
+    [_initializeDb] => Initialize Database Scheme
+    [_tblFavorite] => Initialize favorites for table name
+    [insertFavorite] => Insert item to table favorite
+    [getFavorites] => Get item from table favorite
+    [getFavoriteById] => Get item from table favorite by ID
+    [removeFavorite] => Remove item from table favorite by ID
+
+    Date Created                      Date Updated
+    21 November 2020                  21 November 2020
+
+    Created by                        Updated by
+    Risman Abdilah                    Risman Abdilah
+*/
+
 class DatabaseHelper {
   static DatabaseHelper _databaseHelper;
   static Database _database;

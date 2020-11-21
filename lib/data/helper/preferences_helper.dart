@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/*  Preferences Helper
+    Handle Set Preferences
+    [isDailyReminder] => Bool to get daily reminder
+    [setDailyReminder] => Activate/Deactivate daily reminder
+
+    Date Created                      Date Updated
+    21 November 2020                  21 November 2020
+
+    Created by                        Updated by
+    Risman Abdilah                    Risman Abdilah
+*/
+
 class PreferencesHelper {
   final Future<SharedPreferences> sharedPreferences;
 

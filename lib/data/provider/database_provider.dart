@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siresto_app/common/index.dart';
-import 'package:siresto_app/data/db/database_helper.dart';
+import 'package:siresto_app/data/helper/database_helper.dart';
 import 'package:siresto_app/data/model/index.dart';
 
 /*  Database Provider Function
