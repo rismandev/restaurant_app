@@ -5,18 +5,44 @@ import 'package:flutter/material.dart';
 
 final GlobalKey<ScaffoldState> detailScaffold = GlobalKey<ScaffoldState>();
 
-void comingSoon(BuildContext context) {
+void customAlert(
+  BuildContext context, {
+  String title,
+  String subtitle,
+  Function onConfirm,
+}) {
   if (Platform.isAndroid) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Segera hadir!'),
-          content: Text('Fitur pemesanan akan segera hadir!'),
+          title: Text(title ?? 'Segera hadir!'),
+          content: Text(subtitle ?? 'Fitur pemesanan akan segera hadir!'),
           actions: [
+            if (onConfirm != null) ...{
+              FlatButton(
+                child: Text(
+                  'Batal',
+                  style: Theme.of(context)
+                      .textTheme
+                      .button
+                      .copyWith(color: Colors.red),
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+            },
             FlatButton(
-              child: Text('Oke'),
-              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Oke',
+                style: Theme.of(context)
+                    .textTheme
+                    .button
+                    .copyWith(color: Colors.blue),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                if (onConfirm != null) onConfirm();
+              },
             ),
           ],
         );
@@ -28,13 +54,22 @@ void comingSoon(BuildContext context) {
       barrierDismissible: true,
       builder: (context) {
         return CupertinoAlertDialog(
-          title: Text('Segera hadir!'),
-          content: Text('Fitur pemesanan akan segera hadir!'),
+          title: Text(title ?? 'Segera hadir!'),
+          content: Text(subtitle ?? 'Fitur pemesanan akan segera hadir!'),
           actions: [
             CupertinoDialogAction(
               child: Text('Oke'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                Navigator.pop(context);
+                if (onConfirm != null) onConfirm();
+              },
             ),
+            if (onConfirm != null) ...{
+              CupertinoDialogAction(
+                child: Text('Batal'),
+                onPressed: () => Navigator.pop(context),
+              ),
+            },
           ],
         );
       },

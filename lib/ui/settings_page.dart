@@ -61,10 +61,23 @@ class _SettingsPageState extends State<SettingsPage> {
                   activeColor: Theme.of(context).primaryColor,
                   onChanged: (value) {
                     if (Platform.isIOS) {
-                      comingSoon(context);
+                      customAlert(context);
                     } else {
-                      preferencesProvider.enableDailyReminder(value);
-                      scheduleProvider.scheduleDailyNews(value);
+                      if (!preferencesProvider.isDailyReminder) {
+                        customAlert(
+                          context,
+                          title: 'Aktifkan Notifikasi?',
+                          subtitle:
+                              'Anda akan menerima notifikasi tentang restoran rekomendai siresto setiap hari pada pukul 11.00 WIB.',
+                          onConfirm: () {
+                            preferencesProvider.enableDailyReminder(value);
+                            scheduleProvider.scheduleDailyNews(value);
+                          },
+                        );
+                      } else {
+                        preferencesProvider.enableDailyReminder(value);
+                        scheduleProvider.scheduleDailyNews(value);
+                      }
                     }
                   },
                 ),

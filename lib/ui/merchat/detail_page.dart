@@ -216,7 +216,7 @@ class _MerchantDetailPageState extends State<MerchantDetailPage> {
         itemBuilder: (context, index) => MenuCard(
           item: items[index],
           menu: indexMenu,
-          onPressed: () => comingSoon(context),
+          onPressed: () => customAlert(context),
         ),
       ),
     );

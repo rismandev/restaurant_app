@@ -168,4 +168,17 @@ class MerchantProvider extends ChangeNotifier {
       return "ERROR $e";
     }
   }
+
+  void testAdd(Map<String, dynamic> data) {
+    _listMerchant = new List<Merchant>();
+    notifyListeners();
+    _listMerchant.add(Merchant.fromJson(data));
+    notifyListeners();
+  }
+
+  void testRemove(Merchant data) {
+    _listMerchant = new List<Merchant>();
+    _listMerchant.removeWhere((element) => data.id == element.id);
+    notifyListeners();
+  }
 }

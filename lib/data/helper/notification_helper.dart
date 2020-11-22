@@ -12,7 +12,7 @@ import 'package:siresto_app/data/model/index.dart';
     [configureSelectNotificationSubject] => Handle Notification On Select the Subject
 
     Date Created                      Date Updated
-    21 November 2020                  21 November 2020
+    21 November 2020                  22 November 2020
 
     Created by                        Updated by
     Risman Abdilah                    Risman Abdilah
@@ -60,6 +60,11 @@ class NotificationHelper {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
     MerchantResult merchantResult,
   ) async {
+    final _random = new Random();
+    var merchant = merchantResult.dataList[_random.nextInt(
+      merchantResult.dataList.length,
+    )];
+
     var _channelId = "siresto-channel-1";
     var _channelName = "siresto-app";
     var _channelDescription = "Channel Notification siresto app";
@@ -68,6 +73,7 @@ class NotificationHelper {
       _channelId,
       _channelName,
       _channelDescription,
+      icon: 'app_icon',
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
@@ -81,17 +87,13 @@ class NotificationHelper {
       iOS: iOSPlatformChannelSpecifics,
     );
 
-    final _random = new Random();
-    var merchant = merchantResult.dataList[_random.nextInt(
-      merchantResult.dataList.length,
-    )];
-    var _titleNotification = "<b>Daily News</b> - ${merchant.name}";
-    var _titleName = merchant.description;
+    var _titleNotification = "<b>${merchant.name}</b> - ${merchant.city}";
+    var _titleDesc = 'Recomendasi Restoran hari ini untukmu';
 
     await flutterLocalNotificationsPlugin.show(
       0,
       _titleNotification,
-      _titleName,
+      _titleDesc,
       platformChannelSpecifics,
       payload: jsonEncode(merchant.toJson()),
     );
