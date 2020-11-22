@@ -103,8 +103,10 @@ void showCustomSnackBar(
         return CupertinoAlertDialog(
           content: Text(
             text ?? 'text',
-            style: Theme.of(context).textTheme.button.copyWith(
-                color: textColor ?? Colors.red, fontWeight: FontWeight.w600),
+            style: Theme.of(context)
+                .textTheme
+                .button
+                .copyWith(color: Colors.grey, fontWeight: FontWeight.w600),
           ),
           actions: [
             CupertinoDialogAction(

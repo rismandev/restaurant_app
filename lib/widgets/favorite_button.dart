@@ -24,7 +24,7 @@ class FavoriteButton extends StatelessWidget {
           onTap: onPressed,
           child: Icon(
             Platform.isIOS
-                ? CupertinoIcons.heart_circle
+                ? CupertinoIcons.heart_fill
                 : isActive
                     ? Icons.favorite
                     : Icons.favorite_border,

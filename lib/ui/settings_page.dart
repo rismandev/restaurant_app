@@ -61,7 +61,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   activeColor: Theme.of(context).primaryColor,
                   onChanged: (value) {
                     if (Platform.isIOS) {
-                      customAlert(context);
+                      customAlert(
+                        context,
+                        title: 'Fitur ini segera hadir!',
+                        subtitle:
+                            'Kami perlu beberapa langkah lagi untuk mengaktifkan notifikasi pada IOS',
+                      );
                     } else {
                       if (!preferencesProvider.isDailyReminder) {
                         customAlert(
@@ -90,7 +95,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 title: Text('Tautan Github'),
                 trailing: IconButton(
-                  onPressed: () {},
+                  onPressed: () => _launchInBrowser(
+                    'https://github.com/rismandev/',
+                  ),
                   icon: Icon(Icons.link),
                 ),
               ),

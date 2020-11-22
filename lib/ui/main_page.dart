@@ -132,13 +132,27 @@ class _MainPageState extends State<MainPage>
               .headline6
               .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        trailing: GestureDetector(
-          child: Icon(
-            Platform.isIOS ? CupertinoIcons.settings_solid : Icons.settings,
-            color: Colors.white,
-            size: 24,
-          ),
-          onTap: () => Navigation.navigate(SettingsPage.routeName),
+        trailing: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            GestureDetector(
+              child: Icon(
+                CupertinoIcons.heart_fill,
+                color: Colors.white,
+                size: 28,
+              ),
+              onTap: () => Navigation.navigate(FavoritePage.routeName),
+            ),
+            SizedBox(width: 10),
+            GestureDetector(
+              child: Icon(
+                CupertinoIcons.settings_solid,
+                color: Colors.white,
+                size: 28,
+              ),
+              onTap: () => Navigation.navigate(SettingsPage.routeName),
+            ),
+          ],
         ),
       );
     }
